@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
+
+    <title>Document</title>
+</head>
+<body class="pt-10">
+
+<div class="container mx-auto w-1/2">
+
+    <form id="linkForm" action="#" method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+
+        <div class="mb-4">
+            <h1 class="font-sans mb-4">Link Shortener</h1>
+
+            <label class="block text-grey-darker text-sm font-bold mb-2" for="link">
+                Paste link to be shortened
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline" id="link" type="text" placeholder="http://...">
+        </div>
+        <div class="flex items-center justify-between">
+            <button class="bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                Get short link
+            </button>
+        </div>
+
+        <div id="result" class="mt-4 hidden bg-blue-lightest border-t border-b border-blue text-blue-dark px-4 py-3" role="alert">
+            <p class="font-bold" id="resultText">Informational message</p>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    const form = document.getElementById("linkForm");
+    const link = document.getElementById("link");
+    const result = document.getElementById("result");
+    const resultText = document.getElementById("resultText");
+
+    form.onsubmit = function (ev) {
+        fetch("/link", {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+            },
+            body: JSON.stringify({link: link.value})
+        })
+            .then(res => res.json())
+            .then(res => res.shortenedLink)
+            .then(res => {
+                result.classList.remove("hidden");
+                resultText.innerHTML = `<a class="text-blue-dark hover:text-purple-dark" href="${res}">${res}</a>`
+            });
+        ev.preventDefault();
+    }
+</script>
+</body>
+</html>
